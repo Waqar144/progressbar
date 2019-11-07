@@ -149,7 +149,6 @@ fn (p Progressbar) draw() {
 	}
 
 	//we need to print this for some reason otherwise it doesn't print smoothly
-	println('')
 
 	temp := time.now()
 	offset := difftime(temp, p.start)
