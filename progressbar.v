@@ -17,6 +17,38 @@ fn get_screen_width() int {
 	return cols
 }
 
+fn printchar(s byte) {
+	if isnil(s) {
+		panic('printchar(NIL)')
+	}
+	$if mac {
+		C.fputc(s, stderr)
+		C.fflush(stderr)
+		return
+	}
+	$if linux {
+		C.fputc(s, stderr)
+		C.fflush(stderr)
+		return
+	}
+}
+
+fn eprint(s string) {
+	if isnil(s.str) {
+		panic('eprint(NIL)')
+	}
+	$if mac {
+		C.fprintf(stderr, '%.*s', s.len, s.str)
+		C.fflush(stderr)
+		return
+	}
+	$if linux {
+		C.fprintf(stderr, '%.*s', s.len, s.str)
+		C.fflush(stderr)
+		return
+	}
+}
+
 const (
 	DEFAULT_SCREEN_WIDTH = 80
 	MIN_BAR_WIDTH = 10
@@ -74,7 +106,8 @@ pub fn (p mut Progressbar) increment() {
 
 fn (p Progressbar) write_char(ch byte, times int) {
 	for i := 0; i < times; i++ {
-		print(ch.str())
+        printchar(ch)
+	//	print(ch.str())
 	}
 }
 
@@ -161,22 +194,22 @@ fn (p Progressbar) draw() {
 	if label_width == 0 {
 		bar_width += 1
 	} else {
-		print(p.label)
-		print(' ')
+        C.fwrite(p.label.str, 1, label_width, stderr)
+		printchar(` `)
 	}
 
-	print(p.begin.str())
+	printchar(p.begin)
 	p.write_char(p.fill, bar_piece_current)
 	p.write_char(` `, bar_piece_count - bar_piece_current)
-	print(p.end.str())
+	printchar(p.end)
 
-	print(' ')
+	printchar(` `)
 	eta_format := 'ETA:$eta.hours\h$eta.min\m$eta.sec\s'
-	print(eta_format)
-	print('\r')
+	eprint(eta_format)
+	printchar(`\r`)
 }
 
 pub fn (p Progressbar) finish() {
 	p.draw()
-	print('\n')
+	eprintln('')
 }
