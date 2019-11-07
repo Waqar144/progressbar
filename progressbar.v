@@ -23,8 +23,8 @@ const (
 	ETA_FORMAT_LENGTH = 13
 )
 
-struct Progressbar {
-pub mut:
+pub struct Progressbar {
+mut:
 	max u64
 	value u64
 
@@ -42,15 +42,19 @@ struct ProgressbarTime {
 	sec int
 }
 
-fn (p mut Progressbar) new (label string, max u64) {
+pub fn (p mut Progressbar) new_with_format (label string, max u64, format []byte) {
 	p.max = max
 	p.value = 0
 	p.label = label
 	p.start = time.now()
 
-	p.begin = `|`
-	p.fill = `=`
-	p.end = `|`
+	p.begin = format[0]
+	p.fill = format[1]
+	p.end = format[2]
+}
+
+pub fn (p mut Progressbar) new (label string, max u64) {
+	p.new_with_format(label, max, [`|`, `=`, `|`])
 }
 
 fn (p mut Progressbar) update(value u64) {
@@ -62,7 +66,7 @@ fn (p mut Progressbar) update_label(label string) {
 	p.label = label
 }
 
-fn (p mut Progressbar) increment() {
+pub fn (p mut Progressbar) increment() {
 	p.update(p.value + f64(1))
 }
 
@@ -171,7 +175,7 @@ fn (p Progressbar) draw() {
 	print('\r')
 }
 
-fn (p Progressbar) finish() {
+pub fn (p Progressbar) finish() {
 	p.draw()
 	print('\n')
 }
@@ -187,9 +191,9 @@ fn main() {
 
 
 	mut p1 := Progressbar{}
-	p1.new("Three Second Task with a long label", 3)
-	for i := 0; i < 3; i++ {
-		time.sleep(1)
+	p1.new_with_format('Waqar', 60, [`|`, `-`, `|`])
+	for i := 0; i < 60; i++ {
+		time.usleep(100000)
 		p1.increment()
 	}
 	p1.finish()
