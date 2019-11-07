@@ -1,3 +1,5 @@
+module progressbar
+
 import time
 
 #include<sys/ioctl.h>
@@ -179,36 +181,3 @@ pub fn (p Progressbar) finish() {
 	p.draw()
 	print('\n')
 }
-
-fn main() {
-	mut p := Progressbar{}
-	p.new('Smooth', 60)
-	for i := 0; i < 60; i++ {
-		time.usleep(100000)
-		p.increment()
-	}
-	p.finish()
-
-
-	mut p1 := Progressbar{}
-	p1.new_with_format('Waqar', 60, [`|`, `-`, `|`])
-	for i := 0; i < 60; i++ {
-		time.usleep(100000)
-		p1.increment()
-	}
-	p1.finish()
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
