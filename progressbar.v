@@ -11,6 +11,12 @@ struct Winsize {
   ws_ypixel u16
 }
 
+fn difftime(b time.Time) int {
+	temp := time.now()
+	offset := ((temp.minute - b.minute) * 60 ) + (temp.second - b.second)
+	return offset
+}
+
 fn get_screen_width() int {
 	ws := Winsize{}
 	cols := if C.ioctl(1, C.TIOCGWINSZ, &ws) == -1 { 80 } else { int(ws.ws_col) }
@@ -132,17 +138,11 @@ fn progressbar_label_width (screen_width int, label_len int, bar_width int) int 
 	}
 }
 
-fn difftime(a time.Time, b time.Time) int {
-	temp := time.now()
-	offset := ((temp.minute - b.minute) * 60 ) + (temp.second - b.second)
-	return offset
-}
+
 
 fn (p Progressbar) remaining_seconds() int {
-	temp := time.now()
-	//offset := ((temp.minute - p.start.minute) * 60 ) + (temp.second - p.start.second)
-	offset := difftime(temp, p.start)
-	//offset := f64(C.difftime(C.time(C.NULL), p.start))
+
+	offset := difftime(p.start)
 	if (p.value > 0) && (offset > 0) {
 		return int ( (f64(offset) / f64(p.value)) * (int(p.max) - int(p.value)) )
 	} else {
@@ -181,10 +181,7 @@ fn (p Progressbar) draw() {
 		int(f64(bar_piece_count) * x)
 	}
 
-	//we need to print this for some reason otherwise it doesn't print smoothly
-
-	temp := time.now()
-	offset := difftime(temp, p.start)
+	offset := difftime(p.start)
 	eta := if completed {
 		calc_time_components(offset)
 	} else {
