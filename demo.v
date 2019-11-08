@@ -1,7 +1,12 @@
-import progressbar
+import (
+    statusbar
+    progressbar
+)
+
 import time
 
 fn main() {
+
 	mut p := progressbar.Progressbar{}
 	p.new('Smooth', 60)
 	for i := 0; i < 60; i++ {
@@ -17,4 +22,10 @@ fn main() {
         p1.increment()
     }
     p1.finish()
+
+    mut s := statusbar.new_statusbar('Exiting')
+    go s.start()
+    // logic here...
+    time.sleep(3)
+    s.finish()
 }
