@@ -7,6 +7,19 @@ Currently only progress bar has been implemented and nothing is being exported.
 ![](screenshots/screenshot.png)
 
 ## Usage
+
+### Statusbar
+```
+import statusbar
+fn main() {
+    s := statusbar.new_statusbar('Label')
+    go s.start()
+    //logic..
+    s.finish()
+}
+```
+
+### Progressbar
 `demo.v` gives an overview of how to use this module.
 Example:
 ```
@@ -50,10 +63,11 @@ v build progressbar.v
 Or if you want to build it as a module
 ```
 v build module ~/path/to/dir/progressbar
+//to build the stausbar module
+v build module ~/path/to/dir/statusbar
 ```
 ### Running the demo
 ```
-cp progressbar/demo.v ./
 v run demo.v
 ```
 
