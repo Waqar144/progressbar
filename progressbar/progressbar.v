@@ -84,7 +84,7 @@ fn (p mut Progressbar) update_label(label string) {
 }
 
 pub fn (p mut Progressbar) increment() {
-	p.update(p.value + f64(1))
+	p.update(p.value + u64(1))
 }
 
 fn (p Progressbar) write_char(ch byte, times int) {
