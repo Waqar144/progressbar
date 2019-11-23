@@ -138,6 +138,8 @@ fn calc_time_components (secs int) ProgressbarTime {
 }
 
 fn (p Progressbar) draw() {
+	//clear the line
+	C.printf("%c[2K", 27)
 	screen_width := get_screen_width()
 	label_len := p.label.len
 	mut bar_width := progressbar_width(screen_width, label_len)
