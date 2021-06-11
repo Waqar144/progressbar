@@ -1,8 +1,9 @@
 module progressbar
 
 import time
+import term { clear_previous_line }
 
-#include<sys/ioctl.h>
+#include <sys/ioctl.h>
 
 struct Winsize {
   ws_row u16
@@ -27,17 +28,16 @@ fn printchar(s byte) {
 	if isnil(s) {
 		panic('printchar(NIL)')
 	}
-	C.fputc(s, stdout)
-	C.fflush(stdout)
+	print('${s.ascii_str()}')
 	return
 }
 
 const (
-	DEFAULT_SCREEN_WIDTH = 80
-	MIN_BAR_WIDTH = 10
-	WHITESPACE_LENGTH = 2
-	BAR_BORDER_WIDTH = 2
-	ETA_FORMAT_LENGTH = 13
+	default_screen_width = 80
+	min_bar_width = 10
+	whitespace_length = 2
+	bar_border_width = 2
+	eta_format_length = 13
 )
 
 pub struct Progressbar {
@@ -59,7 +59,7 @@ struct ProgressbarTime {
 	sec int
 }
 
-pub fn (p mut Progressbar) new_with_format (label string, max u64, format []byte) {
+pub fn (mut p Progressbar) new_with_format (label string, max u64, format []rune) {
 	p.max = max
 	p.value = 0
 	p.label = label
@@ -70,20 +70,20 @@ pub fn (p mut Progressbar) new_with_format (label string, max u64, format []byte
 	p.end = format[2]
 }
 
-pub fn (p mut Progressbar) new (label string, max u64) {
-	p.new_with_format(label, max, [`|`, `=`, `|`])
+pub fn (mut p Progressbar) new (label string, max u64) {
+	p.new_with_format(label, max, [rune(`|`), rune(`=`), rune(`|`)])
 }
 
-fn (p mut Progressbar) update(value u64) {
+fn (mut p Progressbar) update(value u64) {
 	p.value = value
 	p.draw()
 }
 
-fn (p mut Progressbar) update_label(label string) {
+fn (mut p Progressbar) update_label(label string) {
 	p.label = label
 }
 
-pub fn (p mut Progressbar) increment() {
+pub fn (mut p Progressbar) increment() {
 	p.update(p.value + u64(1))
 }
 
@@ -102,12 +102,12 @@ fn max (a int , b int) int {
 }
 
 fn progressbar_width(screen_width int, label_len int) int {
-	return max(MIN_BAR_WIDTH, screen_width - label_len - ETA_FORMAT_LENGTH - WHITESPACE_LENGTH)
+	return max(min_bar_width, screen_width - label_len - eta_format_length - whitespace_length)
 }
 
 fn progressbar_label_width (screen_width int, label_len int, bar_width int) int {
-	if label_len + 1 + bar_width + ETA_FORMAT_LENGTH > screen_width {
-		return max(0, screen_width - bar_width - ETA_FORMAT_LENGTH - WHITESPACE_LENGTH)
+	if label_len + 1 + bar_width + eta_format_length > screen_width {
+		return max(0, screen_width - bar_width - eta_format_length - whitespace_length)
 	}
 	else {
 		return label_len
@@ -139,7 +139,7 @@ fn calc_time_components (secs int) ProgressbarTime {
 
 fn (p Progressbar) draw() {
 	//clear the line
-	C.printf("%c[2K", 27)
+	clear_previous_line()
 	screen_width := get_screen_width()
 	label_len := p.label.len
 	mut bar_width := progressbar_width(screen_width, label_len)
@@ -152,7 +152,7 @@ fn (p Progressbar) draw() {
 	}
 
 	x := f64(p.value) / f64(p.max)
-	bar_piece_count := bar_width - BAR_BORDER_WIDTH
+	bar_piece_count := bar_width - bar_border_width
 	bar_piece_current := if completed {
 		bar_piece_count
 	} else {
@@ -179,7 +179,7 @@ fn (p Progressbar) draw() {
 	printchar(p.end)
 
 	printchar(` `)
-	eta_format := 'ETA:$eta.hours\h$eta.min\m$eta.sec\s'
+	eta_format := 'ETA:$eta.hours\\h$eta.min\\m$eta.sec\\s'
 	print(eta_format)
 	printchar(`\r`)
 }

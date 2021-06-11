@@ -6,8 +6,7 @@ fn printchar(s byte) {
 	if isnil(s) {
 		panic('printchar(NIL)')
 	}
-	C.fputc(s, stdout)
-	C.fflush(stdout)
+	print('${s.ascii_str()}')
 	return
 }
 
@@ -15,18 +14,26 @@ struct Statusbar {
 mut:
 	label string
 	format_length int
-	format []byte
+	format []rune
 	finished bool
 }
 
 pub fn new_statusbar(label string) &Statusbar {
 	format := [`-`,`\\`,`|`,`/`]
-	return &Statusbar{label: label, format_length: format.len, format: format}
+	return &Statusbar{
+		label: label
+		format_length: format.len
+		format: format
+	}
 }
 
 
-pub fn new_statusbar_with_format(_label string, _format []byte) &Statusbar {
-	return &Statusbar{label: _label, format_length: _format.len, format: _format}
+pub fn new_statusbar_with_format(_label string, _format []rune) &Statusbar {
+	return &Statusbar{
+		label: _label
+		format_length: _format.len
+		format: _format
+	}
 }
 
 pub fn (s &Statusbar) start(){
@@ -37,15 +44,15 @@ pub fn (s &Statusbar) start(){
 
 		printchar(`\r`)
 		print(s.label + ' ' + s.format[i].str())
-		if(s.finished){
+		if s.finished {
 			break
 		}
 
-		time.usleep(10000)
+		time.sleep(10000 * time.microsecond)
 	}
 }
 
-pub fn (s mut Statusbar) finish() {
+pub fn (mut s Statusbar) finish() {
 	printchar(`\r`)
 	s.finished = true
 }
