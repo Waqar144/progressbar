@@ -1,7 +1,8 @@
 module progressbar
 
 import time
-import term { clear_previous_line }
+import os { flush }
+import term { erase_line_clear }
 
 #include <sys/ioctl.h>
 
@@ -29,6 +30,7 @@ fn printchar(s byte) {
 		panic('printchar(NIL)')
 	}
 	print('${s.ascii_str()}')
+	flush()
 	return
 }
 
@@ -139,7 +141,7 @@ fn calc_time_components (secs int) ProgressbarTime {
 
 fn (p Progressbar) draw() {
 	//clear the line
-	clear_previous_line()
+	erase_line_clear()
 	screen_width := get_screen_width()
 	label_len := p.label.len
 	mut bar_width := progressbar_width(screen_width, label_len)
