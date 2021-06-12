@@ -53,8 +53,9 @@ pub fn (s &Statusbar) start(){
 }
 
 pub fn (mut s Statusbar) finish() {
-	printchar(`\r`)
 	s.finished = true
+	printchar(`\r`)
+	println(s.label + ' ' + s.format[0].str())
 }
 
 // fn main(){
