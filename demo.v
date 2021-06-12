@@ -23,7 +23,6 @@ fn main() {
 
     mut s := statusbar.new_statusbar('Exiting')
     go s.start()
-    // logic here...
-    time.sleep(3)
+    time.sleep(3 * time.second)
     s.finish()
 }
