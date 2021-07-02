@@ -73,7 +73,6 @@ v run demo.v
 
 ## Contributing
 Feel free to clone and contribute. All contributions are welcome.
-It won't build on windows, but it's easily portable to windows. If you are using windows you can help porting this to windows.
 
 ## License
 MIT
