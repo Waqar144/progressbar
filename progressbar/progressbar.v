@@ -1,16 +1,7 @@
 module progressbar
 
 import time
-import term { clear_previous_line }
-
-#include <sys/ioctl.h>
-
-struct Winsize {
-  ws_row u16
-  ws_col u16
-  ws_xpixel u16
-  ws_ypixel u16
-}
+import term { erase_line, get_terminal_size }
 
 fn difftime(b time.Time) int {
 	temp := time.now()
@@ -19,8 +10,7 @@ fn difftime(b time.Time) int {
 }
 
 fn get_screen_width() int {
-	ws := Winsize{}
-	cols := if C.ioctl(1, C.TIOCGWINSZ, &ws) == -1 { 80 } else { int(ws.ws_col) }
+	cols, _ := get_terminal_size()
 	return cols
 }
 
@@ -138,8 +128,11 @@ fn calc_time_components (secs int) ProgressbarTime {
 }
 
 fn (p Progressbar) draw() {
-	//clear the line
-	clear_previous_line()
+	printchar(`\r`)
+	// type: 0 -> current cursor position to end of the line
+	// type: 1 -> current cursor position to beginning of the line
+	// type: 2 -> clears entire line
+	erase_line('2')
 	screen_width := get_screen_width()
 	label_len := p.label.len
 	mut bar_width := progressbar_width(screen_width, label_len)
@@ -179,9 +172,8 @@ fn (p Progressbar) draw() {
 	printchar(p.end)
 
 	printchar(` `)
-	eta_format := 'ETA:$eta.hours\\h$eta.min\\m$eta.sec\\s'
+	eta_format := 'ETA:$eta.hours\\h$eta.min\\m$eta.sec\\s'.substr(0, eta_format_length)
 	print(eta_format)
-	printchar(`\r`)
 }
 
 pub fn (p Progressbar) finish() {
