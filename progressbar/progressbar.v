@@ -1,7 +1,7 @@
 module progressbar
 
 import time
-import term { erase_line_toend, get_terminal_size }
+import term { erase_line, get_terminal_size }
 
 fn difftime(b time.Time) int {
 	temp := time.now()
@@ -128,9 +128,11 @@ fn calc_time_components (secs int) ProgressbarTime {
 }
 
 fn (p Progressbar) draw() {
-	//clear the line
 	printchar(`\r`)
-	erase_line_toend()
+	// type: 0 -> current cursor position to end of the line
+	// type: 1 -> current cursor position to beginning of the line
+	// type: 2 -> clears entire line
+	erase_line('2')
 	screen_width := get_screen_width()
 	label_len := p.label.len
 	mut bar_width := progressbar_width(screen_width, label_len)
