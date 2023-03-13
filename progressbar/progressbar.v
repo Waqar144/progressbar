@@ -18,7 +18,7 @@ fn printchar(s byte) {
 	if isnil(s) {
 		panic('printchar(NIL)')
 	}
-	print('${s.ascii_str()}')
+	eprint('${s.ascii_str()}')
 	return
 }
 
@@ -162,7 +162,7 @@ fn (p Progressbar) draw() {
 	if label_width == 0 {
 		bar_width += 1
 	} else {
-        print(p.label)
+        eprint(p.label)
 		printchar(` `)
 	}
 
@@ -173,7 +173,7 @@ fn (p Progressbar) draw() {
 
 	printchar(` `)
 	eta_format := 'ETA:$eta.hours\\h$eta.min\\m$eta.sec\\s'.substr(0, eta_format_length)
-	print(eta_format)
+	eprint(eta_format)
 }
 
 pub fn (p Progressbar) finish() {

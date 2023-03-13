@@ -6,7 +6,7 @@ fn printchar(s byte) {
 	if isnil(s) {
 		panic('printchar(NIL)')
 	}
-	print('${s.ascii_str()}')
+	eprint('${s.ascii_str()}')
 	return
 }
 
@@ -43,7 +43,7 @@ pub fn (s &Statusbar) start(){
 		}
 
 		printchar(`\r`)
-		print(s.label + ' ' + s.format[i].str())
+		eprint(s.label + ' ' + s.format[i].str())
 		if s.finished {
 			break
 		}
