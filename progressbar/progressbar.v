@@ -14,14 +14,6 @@ fn get_screen_width() int {
 	return cols
 }
 
-fn printchar(s byte) {
-	if isnil(s) {
-		panic('printchar(NIL)')
-	}
-	eprint('${s.ascii_str()}')
-	return
-}
-
 const (
 	default_screen_width = 80
 	min_bar_width = 10
@@ -38,9 +30,9 @@ mut:
 	start time.Time
 	label string
 
-	begin byte
-	fill byte
-	end byte
+	begin rune
+	fill rune
+	end rune
 }
 
 struct ProgressbarTime {
@@ -61,7 +53,7 @@ pub fn (mut p Progressbar) new_with_format (label string, max u64, format []rune
 }
 
 pub fn (mut p Progressbar) new (label string, max u64) {
-	p.new_with_format(label, max, [rune(`|`), rune(`=`), rune(`|`)])
+	p.new_with_format(label, max, [`|`, `=`, `|`])
 }
 
 fn (mut p Progressbar) update(value u64) {
@@ -77,9 +69,9 @@ pub fn (mut p Progressbar) increment() {
 	p.update(p.value + u64(1))
 }
 
-fn (p Progressbar) write_char(ch byte, times int) {
+fn (p Progressbar) write_char(ch rune, times int) {
 	for i := 0; i < times; i++ {
-        printchar(ch)
+        print(ch)
 	}
 }
 
@@ -128,7 +120,7 @@ fn calc_time_components (secs int) ProgressbarTime {
 }
 
 fn (p Progressbar) draw() {
-	printchar(`\r`)
+	print(`\r`)
 	// type: 0 -> current cursor position to end of the line
 	// type: 1 -> current cursor position to beginning of the line
 	// type: 2 -> clears entire line
@@ -162,16 +154,16 @@ fn (p Progressbar) draw() {
 	if label_width == 0 {
 		bar_width += 1
 	} else {
-        eprint(p.label)
-		printchar(` `)
+        print(p.label)
+		print(` `)
 	}
 
-	printchar(p.begin)
+	print(p.begin)
 	p.write_char(p.fill, bar_piece_current)
 	p.write_char(` `, bar_piece_count - bar_piece_current)
-	printchar(p.end)
+	print(p.end)
 
-	printchar(` `)
+	print(` `)
 	eta_format := 'ETA:$eta.hours\\h$eta.min\\m$eta.sec\\s'.substr(0, eta_format_length)
 	eprint(eta_format)
 }
