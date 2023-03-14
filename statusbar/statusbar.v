@@ -4,21 +4,20 @@ import time
 
 struct Statusbar {
 mut:
-	label string
+	label         string
 	format_length int
-	format []rune
-	finished bool
+	format        []rune
+	finished      bool
 }
 
 pub fn new_statusbar(label string) &Statusbar {
-	format := [`-`,`\\`,`|`,`/`]
+	format := [`-`, `\\`, `|`, `/`]
 	return &Statusbar{
 		label: label
 		format_length: format.len
 		format: format
 	}
 }
-
 
 pub fn new_statusbar_with_format(_label string, _format []rune) &Statusbar {
 	return &Statusbar{
@@ -28,8 +27,8 @@ pub fn new_statusbar_with_format(_label string, _format []rune) &Statusbar {
 	}
 }
 
-pub fn (s &Statusbar) start(){
-	for i := 0; i <=s.format_length; i++ {
+pub fn (s &Statusbar) start() {
+	for i := 0; i <= s.format_length; i++ {
 		if i == s.format_length {
 			i = 0
 		}
