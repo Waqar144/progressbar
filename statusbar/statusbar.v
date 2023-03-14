@@ -2,14 +2,6 @@ module statusbar
 
 import time
 
-fn printchar(s byte) {
-	if isnil(s) {
-		panic('printchar(NIL)')
-	}
-	eprint('${s.ascii_str()}')
-	return
-}
-
 struct Statusbar {
 mut:
 	label string
@@ -42,7 +34,7 @@ pub fn (s &Statusbar) start(){
 			i = 0
 		}
 
-		printchar(`\r`)
+		print(`\r`)
 		eprint(s.label + ' ' + s.format[i].str())
 		if s.finished {
 			break
@@ -54,7 +46,7 @@ pub fn (s &Statusbar) start(){
 
 pub fn (mut s Statusbar) finish() {
 	s.finished = true
-	printchar(`\r`)
+	print(`\r`)
 	println(s.label + ' ' + s.format[0].str())
 }
 
